@@ -21,7 +21,7 @@ use PSGIRef::Interface::CGI;
         $env{'HTTP_CONTENT_TYPE'}   = $ENV{CONTENT_TYPE};
         $env{'HTTP_COOKIE'}         = $ENV{COOKIE};
         $env{'psgi.version'} = [1,0];
-        $env{'psgi.url_scheme'} = $ENV{SSL} ? 1 : 0;
+        $env{'psgi.url_scheme'} = 'http';
         $env{'psgi.input'} = *STDIN;
         $env{'psgi.errors'} = *STDERR;
         my $res = $self->{__psgiref_code}->(\%env);
