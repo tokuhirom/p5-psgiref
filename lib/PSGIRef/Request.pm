@@ -324,6 +324,10 @@ This method returns parameters from client.
 
 =back
 
+=head1 TODO
+
+    - lazy request parsing
+
 =head1 THANKS TO
 
 Andy Armstrong, the author of CGI::Simple. This modules takes some code from CGI::Simple. thanks!
