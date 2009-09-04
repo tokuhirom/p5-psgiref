@@ -34,6 +34,11 @@ use PSGIRef::Interface::CGI;
         if (ref $res->[2] eq 'GLOB') {
             my $fh = $res->[2];
             print $_ while <$fh>;
+        } elsif (ref $res->[2] eq 'CODE') {
+            my $code = $res->[2];
+            while (defined(my $buf = $code->())) {
+                print $buf;
+            }
         } else {
             print $res->[2];
         }

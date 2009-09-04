@@ -98,6 +98,31 @@ my @TEST = (
             like $res->content, qr/^package /;
         }
     ],
+    [
+        'return coderef',
+        sub {
+            my $port = $_[0] || 80;
+            HTTP::Request->new(GET => "http://127.0.0.1:$port/");
+        },
+        sub {
+            my ($env, $start_response) = @_;
+            my $req = PSGIRef::Request->new( $env );
+            my $count = 0;
+            return [
+                200,
+                { 'Content-Type' => 'text/plain', },
+                sub {
+                    $count < 4 ? $count++ : undef;
+                },
+            ];
+        },
+        sub {
+            my $res = shift;
+            is $res->code, 200;
+            is $res->header('content_type'), 'text/plain';
+            is $res->content, '0123';
+        }
+    ],
 );
 
 sub count { scalar @TEST }
@@ -112,9 +137,20 @@ __END__
 
 =head1 SYNOPSIS
 
-    my ($name, $handler, $response) = PSGIRef::Test->get_test(0);
+    see tests.
 
 =head1 DESCRIPTION
 
 Test suite for the PSGI spec. This will rename to the PSGI::TestSuite or something.
 
+=head1 METHODS
+
+=over 4
+
+=item count
+
+count the test cases.
+
+=item my ($name, $reqgen, $handler, $test) = PSGIRef::Test->get_test($i)
+
+=back
