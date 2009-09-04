@@ -10,7 +10,7 @@ sub run {
         $env{$k} = $v;
     }
     $env{'psgi.version'} = [ 1, 0 ];
-    $env{'psgi.url_scheme'} = $ENV{HTTPS} ? 'http' : 'https';
+    $env{'psgi.url_scheme'} = $ENV{HTTPS} ? 'https' : 'http';
     $env{'psgi.input'}      = *STDIN;
     $env{'psgi.errors'}     = *STDERR;
     my $res = $handler->(\%env);
