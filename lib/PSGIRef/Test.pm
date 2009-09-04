@@ -90,3 +90,7 @@ __END__
 
     my ($name, $handler, $response) = PSGIRef::Test->get_test(0);
 
+=head1 DESCRIPTION
+
+Test suite for the PSGI spec. This will rename to the PSGI::TestSuite or something.
+
