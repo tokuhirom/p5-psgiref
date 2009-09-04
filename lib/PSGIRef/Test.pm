@@ -18,7 +18,8 @@ my @TEST = (
             HTTP::Request->new(GET => "http://127.0.0.1:$port/?name=miyagawa");
         },
         sub {
-            my $req = PSGIRef::Request->new( $_[0] );
+            my ($env, $start_response) = @_;
+            my $req = PSGIRef::Request->new( $env );
             return [
                 200,
                 { 'Content-Type' => 'text/plain', },
@@ -72,6 +73,29 @@ my @TEST = (
             is $res->code, 200;
             is $res->header('content_type'), 'text/plain';
             is $res->content, 'http';
+        }
+    ],
+    [
+        'return glob',
+        sub {
+            my $port = $_[0] || 80;
+            HTTP::Request->new(GET => "http://127.0.0.1:$port/");
+        },
+        sub {
+            my ($env, $start_response) = @_;
+            my $req = PSGIRef::Request->new( $env );
+            open my $fh, '<', __FILE__ or die $!;
+            return [
+                200,
+                { 'Content-Type' => 'text/plain', },
+                $fh,
+            ];
+        },
+        sub {
+            my $res = shift;
+            is $res->code, 200;
+            is $res->header('content_type'), 'text/plain';
+            like $res->content, qr/^package /;
         }
     ],
 );

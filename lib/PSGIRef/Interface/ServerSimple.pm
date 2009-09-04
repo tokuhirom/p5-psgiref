@@ -31,7 +31,12 @@ use PSGIRef::Interface::CGI;
             print "$k: $v\r\n";
         }
         print "\r\n";
-        print $res->[2];
+        if (ref $res->[2] eq 'GLOB') {
+            my $fh = $res->[2];
+            print $_ while <$fh>;
+        } else {
+            print $res->[2];
+        }
     }
 }
 
