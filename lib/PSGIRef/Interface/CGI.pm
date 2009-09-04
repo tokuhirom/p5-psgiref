@@ -9,8 +9,11 @@ sub run {
         next unless $k =~ qr/^(?:REQUEST_METHOD|SCRIPT_NAME|PATH_INFO|QUERY_STRING|SERVER_NAME|SERVER_PORT|HTTP_)$/;
         $env{$k} = $v;
     }
+    $env{'HTTP_CONTENT_LENGTH'} = $ENV{CONTENT_LENGTH};
+    $env{'HTTP_CONTENT_TYPE'}   = $ENV{CONTENT_TYPE};
+    $env{'HTTP_COOKIE'}         = $ENV{COOKIE};
     $env{'psgi.version'} = [ 1, 0 ];
-    $env{'psgi.url_scheme'} = $ENV{HTTPS} ? 'https' : 'http';
+    $env{'psgi.url_scheme'} = ($ENV{HTTPS}||'off') =~ /^(?:on|1)$/i ? 'https' : 'http';
     $env{'psgi.input'}      = *STDIN;
     $env{'psgi.errors'}     = *STDERR;
     my $res = $handler->(\%env);

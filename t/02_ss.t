@@ -10,32 +10,34 @@ use PSGIRef::Response;
 use PSGIRef::Interface::ServerSimple;
 use Test::TCP;
 use LWP::UserAgent;
+use PSGIRef::Test;
 
-test_tcp(
-    client => sub {
-        my $port = shift;
+for my $i (0..PSGIRef::Test->count()-1) {
+    run_one($i);
+}
+done_testing();
+exit;
 
-        my $ua = LWP::UserAgent->new();
-        my $res = $ua->request(POST "http://127.0.0.1:$port/", [name => 'tatsuhiko']);
-        is $res->code, 200;
-        is $res->header('content_type'), 'text/plain';
-        is $res->content, 'Hello, tatsuhiko';
-        done_testing;
-    },
-    server => sub {
-        my $port = shift;
+sub run_one {
+    my $i = shift;
+    my ($name, $reqgen, $handler, $test) = PSGIRef::Test->get_test($i);
+    note $name;
 
-        my $server = PSGIRef::Interface::ServerSimple->new(port => $port, address => '127.0.0.1');
-        $server->run(
-            sub {
-                my $req = PSGIRef::Request->new($_[0]);
-                return PSGIRef::Response->new(
-                    status  => 200,
-                    headers => HTTP::Headers->new( content_type => 'text/plain', ),
-                    body    => 'Hello, ' . $req->param('name'),
-                );
-            },
-        );
-    },
-);
+    test_tcp(
+        client => sub {
+            my $port = shift;
+
+            my $ua = LWP::UserAgent->new();
+            my $res = $ua->request($reqgen->($port));
+            $test->($res);
+        },
+        server => sub {
+            my $port = shift;
+
+            my $server = PSGIRef::Interface::ServerSimple->new(port => $port, address => '127.0.0.1');
+            $server->run($handler);
+        },
+    );
+}
+
 
