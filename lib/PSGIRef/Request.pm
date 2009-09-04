@@ -80,6 +80,14 @@ sub _parse_params {
     }
 }
 
+sub _parse_keywordlist {
+    my ( $self, $data ) = @_;
+    return () unless defined $data;
+    $data = URI::Escape::uri_unescape($data);
+    my @keywords = split /\s+/, $data;
+    return @keywords;
+}
+
 sub _add_param {
     my ( $self, $param, $value, $overwrite ) = @_;
     return () unless defined $param and defined $value;
