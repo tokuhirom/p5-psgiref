@@ -27,7 +27,7 @@ use PSGI::Util;
         $env{'psgi.url_scheme'} = 'http';
         $env{'psgi.input'}  = $self->stdin_handle;
         $env{'psgi.errors'} = *STDERR;
-        my $res = $self->{__psgiref_code}->(\%env);
+        my $res = $self->{__psgi_app}->(\%env);
         print "HTTP/1.0 $res->[0]\r\n";
         my $headers = $res->[1];
         while (my ($k, $v) = each %$headers) {
@@ -54,10 +54,10 @@ has address => (
 );
 
 sub run {
-    my ($self, $handler) = @_;
+    my ($self, $app) = @_;
 
     my $server = PSGIRef::Impl::ServerSimple::Impl->new($self->port);
-    $server->{__psgiref_code} = $handler;
+    $server->{__psgi_app} = $app;
     $server->host($self->address);
     $server->run();
 }
@@ -85,7 +85,7 @@ __END__
 
 =item PSGIRef::Impl::ServerSimple->run($code)
 
-Run the handler for ServerSimple with PSGI spec.
+Run the app on ServerSimple with PSGI spec.
 
 =back
 
