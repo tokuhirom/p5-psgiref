@@ -122,6 +122,31 @@ my @TEST = (
         }
     ],
     [
+        'handle HTTP-Header',
+        sub {
+            my $port = $_[0] || 80;
+            HTTP::Request->new(
+                GET => "http://127.0.0.1:$port/foo/?dankogai=kogaidan",
+                HTTP::Headers->new( 'Foo' => 'Bar' )
+            );
+        },
+        sub {
+            my $env = shift;
+            return [
+                200,
+                { 'Content-Type' => 'text/plain', },
+                [$env->{HTTP_FOO}],
+            ];
+        },
+        sub {
+            my $res = shift;
+            my $port = shift || 80;
+            is $res->code, 200;
+            is $res->header('content_type'), 'text/plain';
+            is $res->content, 'Bar';
+        }
+    ],
+    [
         'handle HTTP-Cookie',
         sub {
             my $port = $_[0] || 80;
