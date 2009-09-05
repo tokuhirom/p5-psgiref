@@ -272,8 +272,7 @@ my @TEST = (
                     my $self = shift;
                     return $$self++ < 4 ? $$self : undef;
                 }
-                sub close     { $closed++ }
-                sub is_closed { $closed   }
+                sub close     { ::ok(1, 'closed') }
             }
             return [
                 200,
@@ -283,7 +282,6 @@ my @TEST = (
         },
         sub {
             my $res = shift;
-            is(CalledClose->is_closed(), 1);
             is($res->content, '1234');
         }
     ],
