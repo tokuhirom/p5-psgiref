@@ -1,6 +1,7 @@
-package PSGIRef::Interface::CGI;
+package PSGIRef::Impl::CGI;
 use strict;
 use warnings;
+use IO::Handle;
 
 sub run {
     my ($class, $handler) = @_;
@@ -11,7 +12,7 @@ sub run {
     }
     $env{'HTTP_CONTENT_LENGTH'} = $ENV{CONTENT_LENGTH};
     $env{'HTTP_CONTENT_TYPE'}   = $ENV{CONTENT_TYPE};
-    $env{'HTTP_COOKIE'}         = $ENV{COOKIE};
+    $env{'HTTP_COOKIE'}       ||= $ENV{COOKIE};
     $env{'psgi.version'} = [ 1, 0 ];
     $env{'psgi.url_scheme'} = ($ENV{HTTPS}||'off') =~ /^(?:on|1)$/i ? 'https' : 'http';
     $env{'psgi.input'}      = *STDIN;
@@ -41,8 +42,8 @@ __END__
 
 =head1 SYNOPSIS
 
-    use PSGIRef::Interface::CGI;
-    PSGIRef::Interface::CGI->run(sub {
+    use PSGIRef::Impl::CGI;
+    PSGIRef::Impl::CGI->run(sub {
         my $env = shift;
         return [
             200,
@@ -55,7 +56,7 @@ __END__
 
 =over 4
 
-=item PSGIRef::Interface::CGI->run($code)
+=item PSGIRef::Impl::CGI->run($code)
 
 Run the handler for CGI with PSGI spec.
 

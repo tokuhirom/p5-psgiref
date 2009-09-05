@@ -2,7 +2,6 @@ package PSGIRef::Test;
 use strict;
 use warnings;
 use HTTP::Request;
-use PSGIRef::Request;
 use Test::More;
 use HTTP::Request::Common;
 
@@ -18,19 +17,18 @@ my @TEST = (
             HTTP::Request->new(GET => "http://127.0.0.1:$port/?name=miyagawa");
         },
         sub {
-            my ($env, $start_response) = @_;
-            my $req = PSGIRef::Request->new( $env );
+            my $env = shift;
             return [
                 200,
                 { 'Content-Type' => 'text/plain', },
-                'Hello, ' . $req->param('name'),
+                'Hello, ' . $env->{QUERY_STRING},
             ];
         },
         sub {
             my $res = shift;
             is $res->code, 200;
             is $res->header('content_type'), 'text/plain';
-            is $res->content, 'Hello, miyagawa';
+            is $res->content, 'Hello, name=miyagawa';
         }
     ],
     [
@@ -40,18 +38,19 @@ my @TEST = (
             POST("http://127.0.0.1:$port/", [name => 'tatsuhiko']);
         },
         sub {
-            my $req = PSGIRef::Request->new( $_[0] );
+            my $env = shift;
+            my $body = $env->{'psgi.input'}->getline;
             return [
                 200,
                 { 'Content-Type' => 'text/plain', },
-                'Hello, ' . $req->param('name'),
+                'Hello, ' . $body,
             ];
         },
         sub {
             my $res = shift;
             is $res->code, 200;
             is $res->header('content_type'), 'text/plain';
-            is $res->content, 'Hello, tatsuhiko';
+            is $res->content, 'Hello, name=tatsuhiko';
         }
     ],
     [
@@ -82,8 +81,7 @@ my @TEST = (
             HTTP::Request->new(GET => "http://127.0.0.1:$port/");
         },
         sub {
-            my ($env, $start_response) = @_;
-            my $req = PSGIRef::Request->new( $env );
+            my $env = shift;
             open my $fh, '<', __FILE__ or die $!;
             return [
                 200,
@@ -105,8 +103,7 @@ my @TEST = (
             HTTP::Request->new(GET => "http://127.0.0.1:$port/");
         },
         sub {
-            my ($env, $start_response) = @_;
-            my $req = PSGIRef::Request->new( $env );
+            my $env = shift;
             my $count = 0;
             return [
                 200,

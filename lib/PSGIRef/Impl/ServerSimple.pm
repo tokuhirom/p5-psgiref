@@ -1,11 +1,12 @@
-package PSGIRef::Interface::ServerSimple;
+package PSGIRef::Impl::ServerSimple;
 use Any::Moose;
+use IO::Handle;
 use HTTP::Server::Simple;
-use PSGIRef::Interface::CGI;
+use PSGIRef::Impl::CGI;
 
 {
     package # hide from pause
-        PSGIRef::Interface::ServerSimple::Impl;
+        PSGIRef::Impl::ServerSimple::Impl;
     use base qw/HTTP::Server::Simple::CGI/;
 
     sub print_banner { }
@@ -19,10 +20,10 @@ use PSGIRef::Interface::CGI;
         }
         $env{'HTTP_CONTENT_LENGTH'} = $ENV{CONTENT_LENGTH};
         $env{'HTTP_CONTENT_TYPE'}   = $ENV{CONTENT_TYPE};
-        $env{'HTTP_COOKIE'}         = $ENV{COOKIE};
+        $env{'HTTP_COOKIE'}       ||= $ENV{COOKIE};
         $env{'psgi.version'} = [1,0];
         $env{'psgi.url_scheme'} = 'http';
-        $env{'psgi.input'} = *STDIN;
+        $env{'psgi.input'}  = $self->stdin_handle;
         $env{'psgi.errors'} = *STDERR;
         my $res = $self->{__psgiref_code}->(\%env);
         print "HTTP/1.0 $res->[0]\r\n";
@@ -60,7 +61,7 @@ has address => (
 sub run {
     my ($self, $handler) = @_;
 
-    my $server = PSGIRef::Interface::ServerSimple::Impl->new($self->port);
+    my $server = PSGIRef::Impl::ServerSimple::Impl->new($self->port);
     $server->{__psgiref_code} = $handler;
     $server->host($self->address);
     $server->run();
@@ -71,8 +72,8 @@ __END__
 
 =head1 SYNOPSIS
 
-    use PSGIRef::Interface::CGI;
-    PSGIRef::Interface::CGI->run(sub {
+    use PSGIRef::Impl::CGI;
+    PSGIRef::Impl::CGI->run(sub {
         my $env = shift;
         return [
             200,
@@ -85,7 +86,7 @@ __END__
 
 =over 4
 
-=item PSGIRef::Interface::CGI->run($code)
+=item PSGIRef::Impl::CGI->run($code)
 
 Run the handler for CGI with PSGI spec.
 

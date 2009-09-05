@@ -5,9 +5,7 @@ use HTTP::Request;
 use HTTP::Headers::Fast;
 use HTTP::Request::Common;
 use PSGIRef;
-use PSGIRef::Request;
-use PSGIRef::Response;
-use PSGIRef::Interface::ServerSimple;
+use PSGIRef::Impl::ServerSimple;
 use Test::TCP;
 use LWP::UserAgent;
 use PSGIRef::Test;
@@ -34,7 +32,7 @@ sub run_one {
         server => sub {
             my $port = shift;
 
-            my $server = PSGIRef::Interface::ServerSimple->new(port => $port, address => '127.0.0.1');
+            my $server = PSGIRef::Impl::ServerSimple->new(port => $port, address => '127.0.0.1');
             $server->run($handler);
         },
     );
