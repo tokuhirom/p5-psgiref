@@ -121,6 +121,63 @@ my @TEST = (
             is $res->content, '0123';
         }
     ],
+    [
+        'handle HTTP-Cookie',
+        sub {
+            my $port = $_[0] || 80;
+            HTTP::Request->new(
+                GET => "http://127.0.0.1:$port/foo/?dankogai=kogaidan",
+                HTTP::Headers->new( 'Cookie' => 'foo' )
+            );
+        },
+        sub {
+            my $env = shift;
+            return [
+                200,
+                { 'Content-Type' => 'text/plain', },
+                [$env->{HTTP_COOKIE}],
+            ];
+        },
+        sub {
+            my $res = shift;
+            my $port = shift || 80;
+            is $res->code, 200;
+            is $res->header('content_type'), 'text/plain';
+            is $res->content, 'foo';
+        }
+    ],
+    [
+        'validate env',
+        sub {
+            my $port = $_[0] || 80;
+            HTTP::Request->new(
+                GET => "http://127.0.0.1:$port/foo/?dankogai=kogaidan",
+            );
+        },
+        sub {
+            my $env = shift;
+            my $body;
+            $body .= $_ . ':' . $ENV{$_} . "\n" for qw/REQUEST_METHOD PATH_INFO QUERY_STRING SERVER_NAME SERVER_PORT/;
+            return [
+                200,
+                { 'Content-Type' => 'text/plain', },
+                [$body],
+            ];
+        },
+        sub {
+            my $res = shift;
+            my $port = shift || 80;
+            is $res->code, 200;
+            is $res->header('content_type'), 'text/plain';
+            is $res->content, join("\n",
+                'REQUEST_METHOD:GET',
+                'PATH_INFO:/foo/',
+                'QUERY_STRING:dankogai=kogaidan',
+                'SERVER_NAME:127.0.0.1',
+                "SERVER_PORT:$port",
+            )."\n";
+        }
+    ],
 );
 
 sub count { scalar @TEST }

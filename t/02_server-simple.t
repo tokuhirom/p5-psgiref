@@ -27,7 +27,7 @@ sub run_one {
 
             my $ua = LWP::UserAgent->new();
             my $res = $ua->request($reqgen->($port));
-            $test->($res);
+            $test->($res, $port);
         },
         server => sub {
             my $port = shift;

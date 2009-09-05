@@ -8,7 +8,7 @@ sub run {
     my ($class, $handler) = @_;
     my %env;
     while (my ($k, $v) = each %ENV) {
-        next unless $k =~ qr/^(?:REQUEST_METHOD|SCRIPT_NAME|PATH_INFO|QUERY_STRING|SERVER_NAME|SERVER_PORT|HTTP_)$/;
+        next unless $k =~ qr/^(?:REQUEST_METHOD|SCRIPT_NAME|PATH_INFO|QUERY_STRING|SERVER_NAME|SERVER_PORT)$|^HTTP_/;
         $env{$k} = $v;
     }
     $env{'HTTP_CONTENT_LENGTH'} = $ENV{CONTENT_LENGTH};
