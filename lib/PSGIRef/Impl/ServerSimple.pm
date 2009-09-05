@@ -69,9 +69,7 @@ __END__
 
     use PSGIRef::Impl::ServerSimple;
 
-    my $server = PSGIRef::Impl::ServerSimple->new;
-    $server->port(8081);
-    $server->port("0.0.0.0");
+    my $server = PSGIRef::Impl::ServerSimple->new(port => 8080, address => "10.0.0.1");
     $server->run(sub {
         my $env = shift;
         return [
