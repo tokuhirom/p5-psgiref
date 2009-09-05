@@ -39,7 +39,8 @@ my @TEST = (
         },
         sub {
             my $env = shift;
-            my $body = $env->{'psgi.input'}->getline;
+            my $body;
+            read($env->{'psgi.input'}, $body, $env->{HTTP_CONTENT_LENGTH});
             return [
                 200,
                 { 'Content-Type' => 'text/plain', },

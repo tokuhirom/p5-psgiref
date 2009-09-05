@@ -20,7 +20,6 @@ use PSGIRef::Impl::CGI;
         }
         $env{'HTTP_CONTENT_LENGTH'} = $ENV{CONTENT_LENGTH};
         $env{'HTTP_CONTENT_TYPE'}   = $ENV{CONTENT_TYPE};
-        $env{'HTTP_COOKIE'}       ||= $ENV{COOKIE};
         $env{'psgi.version'} = [1,0];
         $env{'psgi.url_scheme'} = 'http';
         $env{'psgi.input'}  = $self->stdin_handle;
