@@ -2,6 +2,7 @@ package PSGIRef::Impl::CGI;
 use strict;
 use warnings;
 use IO::Handle;
+use PSGI::Util;
 
 sub run {
     my ($class, $handler) = @_;
@@ -24,17 +25,11 @@ sub run {
         print "$k: $v\n";
     }
     print "\n";
-    if (ref $res->[2] eq 'GLOB') {
-        my $fh = $res->[2];
-        print $_ while <$fh>;
-    } elsif (ref $res->[2] eq 'CODE') {
-        my $code = $res->[2];
-        while (defined(my $buf = $code->())) {
-            print $buf;
-        }
-    } else {
-        print $res->[2];
-    }
+
+    my $body = $res->[2];
+    my $cb = sub { print STDOUT $_[0] };
+
+    PSGI::Util::foreach($body, $cb);
 }
 
 1;

@@ -3,6 +3,7 @@ use Any::Moose;
 use IO::Handle;
 use HTTP::Server::Simple;
 use PSGIRef::Impl::CGI;
+use PSGI::Util;
 
 {
     package # hide from pause
@@ -31,17 +32,10 @@ use PSGIRef::Impl::CGI;
             print "$k: $v\r\n";
         }
         print "\r\n";
-        if (ref $res->[2] eq 'GLOB') {
-            my $fh = $res->[2];
-            print $_ while <$fh>;
-        } elsif (ref $res->[2] eq 'CODE') {
-            my $code = $res->[2];
-            while (defined(my $buf = $code->())) {
-                print $buf;
-            }
-        } else {
-            print $res->[2];
-        }
+
+        my $body = $res->[2];
+        my $cb = sub { print $_[0] };
+        PSGI::Util::foreach($body, $cb);
     }
 }
 

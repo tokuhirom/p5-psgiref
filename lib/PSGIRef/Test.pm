@@ -21,7 +21,7 @@ my @TEST = (
             return [
                 200,
                 { 'Content-Type' => 'text/plain', },
-                'Hello, ' . $env->{QUERY_STRING},
+                [ 'Hello, ' . $env->{QUERY_STRING} ],
             ];
         },
         sub {
@@ -44,7 +44,7 @@ my @TEST = (
             return [
                 200,
                 { 'Content-Type' => 'text/plain', },
-                'Hello, ' . $body,
+                [ 'Hello, ' . $body ],
             ];
         },
         sub {
@@ -65,7 +65,7 @@ my @TEST = (
             return [
                 200,
                 { 'Content-Type' => 'text/plain', },
-                $env->{'psgi.url_scheme'},
+                [ $env->{'psgi.url_scheme'} ],
             ];
         },
         sub {
