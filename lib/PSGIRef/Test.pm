@@ -260,6 +260,26 @@ my @TEST = (
             is($res->content, '1234');
         }
     ],
+    [
+        'has errors',
+        sub {
+            my $port = $_[0] || 80;
+            HTTP::Request->new(
+                GET => "http://127.0.0.1:$port/foo/?dankogai=kogaidan",
+            );
+        },
+        sub {
+            my $env = shift;
+            my $err = $env->{'psgi.errors'};
+            ok $err;
+            return [
+                200,
+                { 'Content-Type' => 'text/plain', },
+                [1]
+            ];
+        },
+        sub { }
+    ],
 );
 
 sub count { scalar @TEST }
