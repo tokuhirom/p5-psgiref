@@ -16,7 +16,7 @@ use PSGI::Util;
         my ($self) = @_;
         my %env;
         while (my ($k, $v) = each %ENV) {
-            next unless $k =~ qr/^(?:REQUEST_METHOD|PATH_INFO|QUERY_STRING|SERVER_NAME|SERVER_PORT|SERVER_PROTOCOL)$|^HTTP_/;
+            next unless $k =~ qr/^(?:REQUEST_METHOD|PATH_INFO|QUERY_STRING|SERVER_NAME|SERVER_PORT|SERVER_PROTOCOL|CONTENT_LENGTH|CONTENT_TYPE)$|^HTTP_/;
             $env{$k} = $v;
         }
         $env{'HTTP_CONTENT_LENGTH'} = $ENV{CONTENT_LENGTH};
