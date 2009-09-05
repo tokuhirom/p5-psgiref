@@ -66,8 +66,12 @@ __END__
 
 =head1 SYNOPSIS
 
-    use PSGIRef::Impl::CGI;
-    PSGIRef::Impl::CGI->run(sub {
+    use PSGIRef::Impl::ServerSimple;
+
+    my $server = PSGIRef::Impl::ServerSimple->new;
+    $server->port(8081);
+    $server->port("0.0.0.0");
+    $server->run(sub {
         my $env = shift;
         return [
             200,
@@ -80,9 +84,9 @@ __END__
 
 =over 4
 
-=item PSGIRef::Impl::CGI->run($code)
+=item PSGIRef::Impl::ServerSimple->run($code)
 
-Run the handler for CGI with PSGI spec.
+Run the handler for ServerSimple with PSGI spec.
 
 =back
 
