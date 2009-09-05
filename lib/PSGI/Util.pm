@@ -2,7 +2,7 @@ package PSGI::Util;
 
 # Is it safe to use Scalar::Util everywhere?
 sub _blessed {
-    ref $_[0] && ref $_[0] !~ /^(?:SCALAR|ARRAY|HASH|CODE|GLOB|Regexp)$/;
+    ref $_[0] && ref($_[0]) !~ /^(?:SCALAR|ARRAY|HASH|CODE|GLOB|Regexp)$/;
 }
 
 sub foreach {
