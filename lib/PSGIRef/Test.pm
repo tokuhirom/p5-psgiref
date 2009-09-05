@@ -203,6 +203,25 @@ my @TEST = (
             )."\n";
         }
     ],
+    [
+        'SCRIPT_NAME should not be undef',
+        sub {
+            my $port = $_[0] || 80;
+            HTTP::Request->new(
+                GET => "http://127.0.0.1:$port/foo/?dankogai=kogaidan",
+            );
+        },
+        sub {
+            my $env = shift;
+            ok defined($env->{'SCRIPT_NAME'});
+            return [
+                200,
+                { 'Content-Type' => 'text/plain', },
+                [1],
+            ];
+        },
+        sub { }
+    ],
 );
 
 sub count { scalar @TEST }
