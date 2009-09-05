@@ -19,11 +19,11 @@ use PSGI::Util;
             next unless $k =~ qr/^(?:REQUEST_METHOD|PATH_INFO|QUERY_STRING|SERVER_NAME|SERVER_PORT|SERVER_PROTOCOL|CONTENT_LENGTH|CONTENT_TYPE)$|^HTTP_/;
             $env{$k} = $v;
         }
-        $env{'HTTP_CONTENT_LENGTH'} = $ENV{CONTENT_LENGTH};
-        $env{'HTTP_CONTENT_TYPE'}   = $ENV{CONTENT_TYPE};
-        $env{'HTTP_COOKIE'}       ||= $ENV{COOKIE};
-        $env{'SCRIPT_NAME'}         = '';
-        $env{'psgi.version'} = [1,0];
+        $env{'CONTENT_LENGTH'} = $ENV{CONTENT_LENGTH};
+        $env{'CONTENT_TYPE'}   = $ENV{CONTENT_TYPE};
+        $env{'HTTP_COOKIE'}  ||= $ENV{COOKIE};
+        $env{'SCRIPT_NAME'}    = '';
+        $env{'psgi.version'  } = [1,0];
         $env{'psgi.url_scheme'} = 'http';
         $env{'psgi.input'}  = $self->stdin_handle;
         $env{'psgi.errors'} = *STDERR;

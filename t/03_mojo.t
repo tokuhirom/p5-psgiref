@@ -2,9 +2,10 @@ use strict;
 use warnings;
 use Test::More;
 use PSGIRef;
-use PSGIRef::Impl::ServerSimple;
+use PSGIRef::Impl::Mojo;
 use Test::TCP;
 use LWP::UserAgent;
+use Mojo::Server::Daemon;
 use PSGIRef::Test;
 
 PSGIRef::Test->runtests(\&run_one);
@@ -24,9 +25,10 @@ sub run_one {
         },
         server => sub {
             my $port = shift;
-
-            my $server = PSGIRef::Impl::ServerSimple->new(port => $port, address => '127.0.0.1');
-            $server->run($handler);
+            my $daemon = Mojo::Server::Daemon->new;
+            $daemon->port($port);
+            $daemon->address("127.0.0.1");
+            PSGIRef::Impl::Mojo->start($daemon, $handler);
         },
     );
 }

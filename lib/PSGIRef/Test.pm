@@ -2,8 +2,9 @@ package PSGIRef::Test;
 use strict;
 use warnings;
 use HTTP::Request;
-use Test::More;
 use HTTP::Request::Common;
+use HTTP::Headers::Fast;
+use Test::More;
 
 # 0: test name
 # 1: request generator coderef.
@@ -308,11 +309,11 @@ my @TEST = (
     ],
 );
 
-sub count { scalar @TEST }
-
-sub get_test {
-    my ($class, $number) = @_;
-    return @{ $TEST[$number] };
+sub runtests {
+    my($class, $runner) = @_;
+    for my $test (@TEST) {
+        $runner->(@$test);
+    }
 }
 
 1;
