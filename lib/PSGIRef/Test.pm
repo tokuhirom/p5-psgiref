@@ -182,7 +182,7 @@ my @TEST = (
         sub {
             my $env = shift;
             my $body;
-            $body .= $_ . ':' . $ENV{$_} . "\n" for qw/REQUEST_METHOD PATH_INFO QUERY_STRING SERVER_NAME SERVER_PORT/;
+            $body .= $_ . ':' . $env->{$_} . "\n" for qw/REQUEST_METHOD PATH_INFO QUERY_STRING SERVER_NAME SERVER_PORT/;
             return [
                 200,
                 { 'Content-Type' => 'text/plain', },
@@ -201,6 +201,30 @@ my @TEST = (
                 'SERVER_NAME:127.0.0.1',
                 "SERVER_PORT:$port",
             )."\n";
+        }
+    ],
+    [
+        'SERVER_PROTOCOL is required',
+        sub {
+            my $port = $_[0] || 80;
+            HTTP::Request->new(
+                GET => "http://127.0.0.1:$port/foo/?dankogai=kogaidan",
+            );
+        },
+        sub {
+            my $env = shift;
+            return [
+                200,
+                { 'Content-Type' => 'text/plain', },
+                [$env->{SERVER_PROTOCOL}],
+            ];
+        },
+        sub {
+            my $res = shift;
+            my $port = shift || 80;
+            is $res->code, 200;
+            is $res->header('content_type'), 'text/plain';
+            like $res->content, qr{^HTTP/1\.[01]$};
         }
     ],
     [
