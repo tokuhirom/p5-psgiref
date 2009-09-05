@@ -222,6 +222,44 @@ my @TEST = (
         },
         sub { }
     ],
+    [
+        # PEP-333 says:
+        #    If the iterable returned by the application has a close() method,
+        #   the server or gateway must call that method upon completion of the
+        #   current request, whether the request was completed normally, or
+        #   terminated early due to an error. 
+        'call close after read file-like',
+        sub {
+            my $port = $_[0] || 80;
+            HTTP::Request->new(
+                GET => "http://127.0.0.1:$port/foo/?dankogai=kogaidan",
+            );
+        },
+        sub {
+            my $env = shift;
+            {
+                package CalledClose;
+                our $closed = -1;
+                sub new { $closed = 0; my $i=0; bless \$i, 'CalledClose' }
+                sub getline {
+                    my $self = shift;
+                    return $$self++ < 4 ? $$self : undef;
+                }
+                sub close     { $closed++ }
+                sub is_closed { $closed   }
+            }
+            return [
+                200,
+                { 'Content-Type' => 'text/plain', },
+                CalledClose->new(),
+            ];
+        },
+        sub {
+            my $res = shift;
+            is(CalledClose->is_closed(), 1);
+            is($res->content, '1234');
+        }
+    ],
 );
 
 sub count { scalar @TEST }
