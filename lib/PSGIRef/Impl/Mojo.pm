@@ -26,6 +26,7 @@ sub handler {
     $env{QUERY_STRING}   = $tx->req->url->query->to_string;
     $env{SERVER_NAME}    = $mojo_daemon->address;
     $env{SERVER_PORT}    = $mojo_daemon->port;
+    $env{SERVER_PROTOCOL} = "HTTP/" . $tx->req->version;
 
     for my $name (@{ $tx->req->headers->names }) {
         $name =~ tr/-/_/;
