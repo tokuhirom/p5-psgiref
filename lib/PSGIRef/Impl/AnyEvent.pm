@@ -56,6 +56,7 @@ sub run {
             'psgi.version'    => [ 1, 0 ],
             'psgi.errors'     => *STDERR,
             'psgi.url_scheme' => 'http',
+            REMOTE_ADDR       => $peer_host,
         };
 
         my $handle;

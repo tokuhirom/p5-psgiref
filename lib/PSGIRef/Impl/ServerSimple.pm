@@ -11,7 +11,7 @@ sub handler {
     my ($self) = @_;
     my %env;
     while (my ($k, $v) = each %ENV) {
-        next unless $k =~ qr/^(?:REQUEST_METHOD|PATH_INFO|QUERY_STRING|SERVER_NAME|SERVER_PORT|SERVER_PROTOCOL|CONTENT_LENGTH|CONTENT_TYPE)$|^HTTP_/;
+        next unless $k =~ qr/^(?:REQUEST_METHOD|PATH_INFO|QUERY_STRING|SERVER_NAME|SERVER_PORT|SERVER_PROTOCOL|CONTENT_LENGTH|CONTENT_TYPE|REMOTE_ADDR)$|^HTTP_/;
         $env{$k} = $v;
     }
     $env{'CONTENT_LENGTH'} = $ENV{CONTENT_LENGTH};
