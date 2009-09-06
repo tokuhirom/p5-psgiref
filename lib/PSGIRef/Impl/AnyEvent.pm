@@ -89,7 +89,10 @@ sub run {
                         $handle->push_write("$k: $v\r\n");
                     }
                     $handle->push_write("\r\n");
-                    return sub { $handle->push_write($_[0]) };
+                    return PSGI::Util::response_handle(
+                        print => sub { $handle->push_write($_[0]) },
+                        close => sub { $handle->push_shutdown },
+                    );
                 };
                 my $do_it = sub {
                     my $res = $self->psgi_app->($env, $start_response);
