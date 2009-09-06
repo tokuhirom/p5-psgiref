@@ -49,7 +49,7 @@ __END__
     use PSGIRef::Impl::ServerSimple;
 
     my $server = PSGIRef::Impl::ServerSimple->new(8080);
-    $server->handler(sub {
+    $server->psgi_app(sub {
         my $env = shift;
         return [
             200,
