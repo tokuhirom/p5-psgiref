@@ -4,7 +4,6 @@ use PSGIRef::Impl::AnyEvent;
 
 # Note: timer works forever!
 
-my @timers;
 PSGIRef::Impl::AnyEvent->new(
     port => 9979,
     psgi_app => sub {
@@ -14,10 +13,10 @@ PSGIRef::Impl::AnyEvent->new(
             after => 0,
             interval => 1,
             cb => sub {
+                scalar $w; # mention
                 $writer->(time() . "\n");
             },
         );
-        push @timers, $w;
         return [];
     },
 )->run;
