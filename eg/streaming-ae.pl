@@ -7,11 +7,11 @@ PSGIRef::Impl::AnyEvent->new(
     psgi_app => sub {
         my ($env, $start_response) = @_;
         my $writer = $start_response->(200, {'X-Foo' => 'bar'});
-        my $w; $w = AnyEvent->timer(
+        my $streamer; $streamer = AnyEvent->timer(
             after => 0,
             interval => 1,
             cb => sub {
-                scalar $w; # mention
+                scalar $streamer;
                 $writer->print(time() . "\n");
             },
         );
@@ -20,6 +20,7 @@ PSGIRef::Impl::AnyEvent->new(
             after => 5,
             cb => sub {
                 scalar $close_w;
+                undef $streamer; # cancel
                 $writer->print("DONE\n");
                 $writer->close;
             },
