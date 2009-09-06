@@ -33,13 +33,12 @@ sub response_handle {
 }
 
 package PSGI::Util::ResponseHandle;
-use Carp ();
 
 sub new {
     my($class, %methods) = @_;
 
     my $self = bless [ ], $class;
-    $self->[0] = $methods{print} or Carp::croak "print() should be implemented.";
+    $self->[0] = $methods{print} or do { require Carp; Carp::croak("print() should be implemented.") };
     $self->[1] = $methods{close} || sub {};
 
     return $self;
