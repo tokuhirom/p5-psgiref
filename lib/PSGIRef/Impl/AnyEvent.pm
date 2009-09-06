@@ -82,14 +82,20 @@ sub run {
                 $env->{ $k } = $v;
             }
             if ( $chunk =~ /^$/ ) {
-                my $do_it = sub {
-                    my $res = $self->psgi_app->($env);
-                    $handle->push_write("HTTP/1.0 $res->[0]\r\n");
-                    my $headers = $res->[1];
+                my $start_response = sub {
+                    my ($status, $headers) = @_;
+                    $handle->push_write("HTTP/1.0 $status\r\n");
                     while (my ($k, $v) = each %$headers) {
                         $handle->push_write("$k: $v\r\n");
                     }
                     $handle->push_write("\r\n");
+                    return sub { $handle->push_write($_[0]) };
+                };
+                my $do_it = sub {
+                    my $res = $self->psgi_app->($env, $start_response);
+                    return if scalar(@$res) == 0;
+
+                    $start_response->($res->[0], $res->[1]);
 
                     my $body = $res->[2];
                     if ( ref $body eq 'GLOB') {
