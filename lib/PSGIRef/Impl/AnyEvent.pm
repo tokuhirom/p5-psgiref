@@ -92,9 +92,31 @@ sub run {
                     $handle->push_write("\r\n");
 
                     my $body = $res->[2];
-                    my $cb = sub { $handle->push_write($_[0]) };
-                    PSGI::Util::foreach($body, $cb);
-                    $handle->push_shutdown();
+                    if ( ref $body eq 'GLOB') {
+                        my $read; $read = sub {
+                            my $w; $w = AnyEvent->io(
+                                fh => $body,
+                                poll => 'r',
+                                cb => sub {
+                                    read($body, my $buf, 4096);
+                                    $handle->push_write($buf);
+                                    if (eof($body)) {
+                                        undef $w;
+                                        $body->close if $body->can('close');
+                                        $handle->push_shutdown;
+                                    } else {
+                                        $read->();
+                                    }
+                                },
+                            );
+                        };
+                        $read->();
+                    }
+                    else {
+                        my $cb = sub { $handle->push_write($_[0]) };
+                        PSGI::Util::foreach( $body, $cb );
+                        $handle->push_shutdown();
+                    }
                 };
                 if ($env->{CONTENT_LENGTH} && $env->{REQUEST_METHOD} =~ /^(?:POST|PUT)$/) {
                     # XXX Oops
