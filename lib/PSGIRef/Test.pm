@@ -98,6 +98,7 @@ my @TEST = (
             is $res->code, 200;
             is $res->header('content_type'), 'text/plain';
             like $res->content, qr/^package /;
+            like $res->content, qr/END_MARK_FOR_TESTING$/;
         }
     ],
     [
@@ -336,3 +337,7 @@ count the test cases.
 =item my ($name, $reqgen, $handler, $test) = PSGIRef::Test->get_test($i)
 
 =back
+
+=cut
+
+END_MARK_FOR_TESTING
