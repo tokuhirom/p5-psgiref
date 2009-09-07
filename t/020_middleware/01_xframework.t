@@ -7,11 +7,11 @@ use Test::More;
 my $handler = PSGIRef::Middleware::XFramework->new(
     framework => 'Dog',
     code => sub {
-        [200, {}, ['ok']]
+        [200, [], ['ok']]
     }
 );
 my $res = $handler->(+{});
-is_deeply $res, [200, {'X-Framework' => 'Dog'}, ['ok']];
+is_deeply $res, [200, ['X-Framework' => 'Dog'], ['ok']];
 
 done_testing;
 

@@ -4,7 +4,7 @@ use overload '&{}' => sub {
     my $self = $_[0];
     sub {
         my $res = $self->code->( @_ );
-        $res->[1]->{'X-Framework'} = $self->framework;
+        push @{$res->[1]}, 'X-Framework' => $self->framework;
         $res;
     }
   },
