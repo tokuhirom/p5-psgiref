@@ -49,7 +49,7 @@ sub handler {
 
     $tx->res->code($res->[0]);
     my $headers = $res->[1];
-    while (my ($k, $v) = each %$headers) {
+    while (my ($k, $v) = splice(@$headers, 0, 2)) {
         $tx->res->headers->header($k => $v);
     }
 

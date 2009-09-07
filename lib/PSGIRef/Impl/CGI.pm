@@ -19,7 +19,7 @@ sub run {
     my $res = $handler->(\%env);
     print "Status: $res->[0]\n";
     my $headers = $res->[1];
-    while (my ($k, $v) = each %$headers) {
+    while (my ($k, $v) = splice(@$headers, 0, 2)) {
         print "$k: $v\n";
     }
     print "\n";

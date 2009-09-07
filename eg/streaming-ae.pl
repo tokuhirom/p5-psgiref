@@ -6,7 +6,7 @@ PSGIRef::Impl::AnyEvent->new(
     port => 9979,
     psgi_app => sub {
         my ($env, $start_response) = @_;
-        my $writer = $start_response->(200, {'X-Foo' => 'bar'});
+        my $writer = $start_response->(200, ['X-Foo' => 'bar']);
         my $streamer; $streamer = AnyEvent->timer(
             after => 0,
             interval => 1,

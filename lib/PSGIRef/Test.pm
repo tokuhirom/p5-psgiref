@@ -21,7 +21,7 @@ my @TEST = (
             my $env = shift;
             return [
                 200,
-                { 'Content-Type' => 'text/plain', },
+                [ 'Content-Type' => 'text/plain', ],
                 [ 'Hello, ' . $env->{QUERY_STRING} ],
             ];
         },
@@ -46,7 +46,7 @@ my @TEST = (
             $env->{'psgi.input'}->read($body, $env->{CONTENT_LENGTH});
             return [
                 200,
-                { 'Content-Type' => 'text/plain', },
+                [ 'Content-Type' => 'text/plain', ],
                 [ 'Hello, ' . $body ],
             ];
         },
@@ -67,7 +67,7 @@ my @TEST = (
             my $env = $_[0];
             return [
                 200,
-                { 'Content-Type' => 'text/plain', },
+                [ 'Content-Type' => 'text/plain', ],
                 [ $env->{'psgi.url_scheme'} ],
             ];
         },
@@ -89,7 +89,7 @@ my @TEST = (
             open my $fh, '<', __FILE__ or die $!;
             return [
                 200,
-                { 'Content-Type' => 'text/plain', },
+                [ 'Content-Type' => 'text/plain', ],
                 $fh,
             ];
         },
@@ -112,7 +112,7 @@ my @TEST = (
             my $count = 0;
             return [
                 200,
-                { 'Content-Type' => 'text/plain', },
+                [ 'Content-Type' => 'text/plain', ],
                 sub {
                     $count < 4 ? $count++ : undef;
                 },
@@ -138,7 +138,7 @@ my @TEST = (
             my $env = shift;
             return [
                 200,
-                { 'Content-Type' => 'text/plain', },
+                [ 'Content-Type' => 'text/plain', ],
                 [$env->{HTTP_FOO}],
             ];
         },
@@ -163,7 +163,7 @@ my @TEST = (
             my $env = shift;
             return [
                 200,
-                { 'Content-Type' => 'text/plain', },
+                [ 'Content-Type' => 'text/plain', ],
                 [$env->{HTTP_COOKIE}],
             ];
         },
@@ -189,7 +189,7 @@ my @TEST = (
             $body .= $_ . ':' . $env->{$_} . "\n" for qw/REQUEST_METHOD PATH_INFO QUERY_STRING SERVER_NAME SERVER_PORT/;
             return [
                 200,
-                { 'Content-Type' => 'text/plain', },
+                [ 'Content-Type' => 'text/plain', ],
                 [$body],
             ];
         },
@@ -219,7 +219,7 @@ my @TEST = (
             my $env = shift;
             return [
                 200,
-                { 'Content-Type' => 'text/plain', },
+                [ 'Content-Type' => 'text/plain', ],
                 [$env->{SERVER_PROTOCOL}],
             ];
         },
@@ -244,7 +244,7 @@ my @TEST = (
             ok defined($env->{'SCRIPT_NAME'});
             return [
                 200,
-                { 'Content-Type' => 'text/plain', },
+                [ 'Content-Type' => 'text/plain', ],
                 [1],
             ];
         },
@@ -277,7 +277,7 @@ my @TEST = (
             }
             return [
                 200,
-                { 'Content-Type' => 'text/plain', },
+                [ 'Content-Type' => 'text/plain', ],
                 CalledClose->new(),
             ];
         },
@@ -300,7 +300,7 @@ my @TEST = (
             ok $err;
             return [
                 200,
-                { 'Content-Type' => 'text/plain', },
+                [ 'Content-Type' => 'text/plain', ],
                 [1]
             ];
         },

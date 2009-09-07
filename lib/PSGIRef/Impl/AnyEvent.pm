@@ -85,7 +85,7 @@ sub run {
                 my $start_response = sub {
                     my ($status, $headers) = @_;
                     $handle->push_write("HTTP/1.0 $status\r\n");
-                    while (my ($k, $v) = each %$headers) {
+                    while (my ($k, $v) = splice(@$headers, 0, 2)) {
                         $handle->push_write("$k: $v\r\n");
                     }
                     $handle->push_write("\r\n");
