@@ -90,7 +90,7 @@ sub run {
                     }
                     $handle->push_write("\r\n");
                     return PSGI::Util::response_handle(
-                        print => sub { $handle->push_write($_[0]) },
+                        write => sub { $handle->push_write($_[0]) },
                         close => sub { $handle->push_shutdown },
                     );
                 };

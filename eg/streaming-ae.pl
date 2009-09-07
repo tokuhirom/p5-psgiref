@@ -12,7 +12,7 @@ PSGIRef::Impl::AnyEvent->new(
             interval => 1,
             cb => sub {
                 scalar $streamer;
-                $writer->print(time() . "\n");
+                $writer->write(time() . "\n");
             },
         );
 
@@ -21,7 +21,7 @@ PSGIRef::Impl::AnyEvent->new(
             cb => sub {
                 scalar $close_w;
                 undef $streamer; # cancel
-                $writer->print("DONE\n");
+                $writer->write("DONE\n");
                 $writer->close;
             },
         );
