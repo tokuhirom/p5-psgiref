@@ -20,7 +20,9 @@ sub run {
     print "Status: $res->[0]\n";
     my $headers = $res->[1];
     while (my ($k, $v) = each %$headers) {
-        print "$k: $v\n";
+        for my $e (ref($v) ? @$v : $v) {
+            print "$k: $e\n";
+        }
     }
     print "\n";
 

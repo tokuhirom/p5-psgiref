@@ -86,7 +86,9 @@ sub run {
                     my ($status, $headers) = @_;
                     $handle->push_write("HTTP/1.0 $status\r\n");
                     while (my ($k, $v) = each %$headers) {
-                        $handle->push_write("$k: $v\r\n");
+                        for my $e (ref($v) ? @$v : $v) {
+                            $handle->push_write("$k: $e\r\n");
+                        }
                     }
                     $handle->push_write("\r\n");
                     return sub { $handle->push_write($_[0]) };

@@ -26,7 +26,9 @@ sub handler {
     print "HTTP/1.0 $res->[0]\r\n";
     my $headers = $res->[1];
     while (my ($k, $v) = each %$headers) {
-        print "$k: $v\r\n";
+        for my $e (ref($v) ? @$v : $v) {
+            print "$k: $e\r\n";
+        }
     }
     print "\r\n";
 

@@ -50,7 +50,7 @@ sub handler {
     $tx->res->code($res->[0]);
     my $headers = $res->[1];
     while (my ($k, $v) = each %$headers) {
-        $tx->res->headers->header($k => $v);
+        $tx->res->headers->header($k => (ref($v) ? @$v : $v));
     }
 
     my $body = $res->[2];

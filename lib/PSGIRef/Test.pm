@@ -307,6 +307,28 @@ my @TEST = (
         },
         sub { }
     ],
+    [
+        'multiple-headers',
+        sub {
+            my $port = $_[0] || 80;
+            HTTP::Request->new(
+                GET => "http://127.0.0.1:$port/foo/?dankogai=kogaidan",
+            );
+        },
+        sub {
+            my $env = shift;
+            return [
+                200,
+                { 'Content-Type' => 'text/plain', 'X-Foo' => ['bar', 'baz' ]},
+                [1]
+            ];
+        },
+        sub {
+            my $res = shift;
+            my @foo = $res->header('X-Foo');
+            is_deeply(\@foo, ['bar', 'baz']);
+        }
+    ],
 );
 for my $test (@TEST) {
     my $orig = $test->[2];
