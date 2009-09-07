@@ -16,7 +16,7 @@ sub foreach {
         while (defined(my $line = $body->getline)) {
             $cb->($line);
         }
-        $body->close if $body->can('close');
+        $body->close;
     }
 }
 
