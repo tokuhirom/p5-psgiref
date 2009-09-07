@@ -12,17 +12,10 @@ sub foreach {
         for my $line (@$body) {
             $cb->($line);
         }
-    } elsif (ref $body eq 'GLOB' || (_blessed($body) && $body->can('getline'))) {
+    } else {
         while (defined(my $line = $body->getline)) {
             $cb->($line);
         }
-        $body->close if $body->can('close');
-    } elsif (ref $body eq 'CODE') {
-        while (defined(my $line = $body->())) {
-            $cb->($line);
-        }
-    } else {
-        $body->foreach($cb);
         $body->close if $body->can('close');
     }
 }

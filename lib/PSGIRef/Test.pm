@@ -102,30 +102,6 @@ my @TEST = (
         }
     ],
     [
-        'return coderef',
-        sub {
-            my $port = $_[0] || 80;
-            HTTP::Request->new(GET => "http://127.0.0.1:$port/");
-        },
-        sub {
-            my $env = shift;
-            my $count = 0;
-            return [
-                200,
-                [ 'Content-Type' => 'text/plain', ],
-                sub {
-                    $count < 4 ? $count++ : undef;
-                },
-            ];
-        },
-        sub {
-            my $res = shift;
-            is $res->code, 200;
-            is $res->header('content_type'), 'text/plain';
-            is $res->content, '0123';
-        }
-    ],
-    [
         'handle HTTP-Header',
         sub {
             my $port = $_[0] || 80;
